@@ -5,12 +5,13 @@ export default function VoiceRecognition({
   interimTranscript,
   detectedKeyword,
   isSupported,
+  onTranscriptChange,
 }) {
   return (
     <div className="voice-section glass-card" style={{ marginTop: '1.5rem', width: '100%', maxWidth: '400px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-text-secondary)' }}>
-          Voice Activation (Hands-Free)
+          Voice & Text Intake (Hands-Free)
         </h3>
         {isSupported ? (
           <button
@@ -49,7 +50,7 @@ export default function VoiceRecognition({
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-              Status: {isListening ? 'Listening for keywords...' : 'Inactive'}
+              Status: {isListening ? 'Listening for keywords...' : 'Inactive (Type or Speak)'}
             </span>
             {isListening && (
               <div className="voice-waves">
@@ -62,25 +63,40 @@ export default function VoiceRecognition({
             )}
           </div>
 
-          <div
-            style={{
-              background: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '8px',
-              padding: '0.75rem',
-              minHeight: '60px',
-              fontSize: '0.85rem',
-              lineHeight: '1.4',
-              color: transcript || interimTranscript ? 'var(--color-text)' : 'var(--color-text-secondary)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-            }}
-          >
-            {transcript || interimTranscript ? (
-              <>
-                <span>{transcript}</span>
-                <span style={{ opacity: 0.6 }}>{interimTranscript}</span>
-              </>
-            ) : (
-              <em>"Help", "Emergency", "SOS", or "Accident" will auto-trigger SOS.</em>
+          <div style={{ position: 'relative' }}>
+            <textarea
+              value={transcript}
+              onChange={(e) => onTranscriptChange(e.target.value)}
+              placeholder='Type your emergency details here, or click the mic to speak (e.g., "Help", "Emergency").'
+              style={{
+                width: '100%',
+                background: 'rgba(0, 0, 0, 0.3)',
+                borderRadius: '8px',
+                padding: '0.75rem',
+                minHeight: '80px',
+                fontSize: '0.85rem',
+                lineHeight: '1.45',
+                color: 'var(--color-text)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                resize: 'none',
+                outline: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+            {interimTranscript && (
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: '8px',
+                  left: '12px',
+                  fontSize: '0.8rem',
+                  opacity: 0.6,
+                  color: 'var(--color-info)',
+                  pointerEvents: 'none',
+                }}
+              >
+                {interimTranscript}
+              </span>
             )}
           </div>
 

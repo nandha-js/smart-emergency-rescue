@@ -19,7 +19,7 @@ export default function VictimPage() {
   const [toastMessage, setToastMessage] = useState('')
   const [toastType, setToastType] = useState('info')
 
-  const { latitude, longitude, accuracy, error: geoError, loading: geoLoading } = useGeolocation()
+  const { latitude, longitude, accuracy, error: geoError, loading: geoLoading, retry } = useGeolocation()
   const {
     transcript,
     interimTranscript,
@@ -30,6 +30,15 @@ export default function VictimPage() {
     detectedKeyword,
     resetTranscript,
   } = useVoiceRecognition()
+
+  const [editableTranscript, setEditableTranscript] = useState('')
+
+  // Sync mic transcripts to editable state
+  useEffect(() => {
+    if (transcript) {
+      setEditableTranscript(transcript)
+    }
+  }, [transcript])
 
   useEffect(() => {
     async function fetchUsers() {
@@ -58,6 +67,14 @@ export default function VictimPage() {
     }
   }, [detectedKeyword])
 
+  // Alert on location disabled / missing GPS permission
+  useEffect(() => {
+    if (geoError) {
+      setToastMessage('⚠️ Location Services Disabled: Rescuers cannot locate you without GPS. Please check browser permissions.')
+      setToastType('error')
+    }
+  }, [geoError])
+
   const handleTriggerSOS = async (method = 'button', voiceTranscript = '') => {
     if (!selectedUserId) {
       setToastMessage('Please select a victim profile first.')
@@ -76,7 +93,7 @@ export default function VictimPage() {
         userId: selectedUserId,
         latitude,
         longitude,
-        transcript: method === 'voice' ? voiceTranscript : 'Manual emergency activation via SOS hold button.',
+        transcript: editableTranscript || (method === 'voice' ? voiceTranscript : 'Manual emergency activation via SOS hold button.'),
         triggerMethod: method,
       }
 
@@ -101,6 +118,7 @@ export default function VictimPage() {
     setActiveAlert(null)
     setApiError('')
     resetTranscript()
+    setEditableTranscript('')
   }
 
   const handleVoiceToggle = () => {
@@ -175,6 +193,30 @@ export default function VictimPage() {
           )}
         </div>
 
+        {/* GPS Permission Warning Banner */}
+        {geoError && (
+          <div
+            className="glass-card"
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              borderLeft: '4px solid var(--color-danger)',
+              background: 'rgba(220, 38, 38, 0.1)',
+              padding: '1rem',
+              marginBottom: '1.5rem',
+              borderRadius: '0 8px 8px 0',
+              animation: 'shake 0.5s ease',
+            }}
+          >
+            <div style={{ fontWeight: 700, color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
+              <span>⚠️</span> GPS SIGNAL REQUIRED
+            </div>
+            <p style={{ marginTop: '0.25rem', color: 'var(--color-text-secondary)', fontSize: '0.78rem', lineHeight: '1.4' }}>
+              Location permissions are denied or disabled. Emergency services require GPS signals to track coordinates in real-time. Please click the address bar icon to allow location access.
+            </p>
+          </div>
+        )}
+
         {/* SOS Panic Button */}
         <SOSButton
           onTrigger={() => handleTriggerSOS('button')}
@@ -186,10 +228,11 @@ export default function VictimPage() {
         <VoiceRecognition
           isListening={isListening}
           onToggle={handleVoiceToggle}
-          transcript={transcript}
+          transcript={editableTranscript}
           interimTranscript={interimTranscript}
           detectedKeyword={detectedKeyword}
           isSupported={voiceSupported}
+          onTranscriptChange={setEditableTranscript}
         />
 
         {/* Geolocation Section */}
@@ -199,6 +242,7 @@ export default function VictimPage() {
           accuracy={accuracy}
           error={geoError}
           loading={geoLoading}
+          onRetry={retry}
         />
 
         {/* Network/API Error display */}

@@ -10,7 +10,7 @@ export default function useGeolocation() {
   })
   const watchIdRef = useRef(null)
 
-  useEffect(() => {
+  const startTracking = () => {
     if (!navigator.geolocation) {
       setState((prev) => ({
         ...prev,
@@ -18,6 +18,12 @@ export default function useGeolocation() {
         loading: false,
       }))
       return
+    }
+
+    setState((prev) => ({ ...prev, loading: true, error: null }))
+
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current)
     }
 
     const onSuccess = (position) => {
@@ -43,7 +49,10 @@ export default function useGeolocation() {
       timeout: 15000,
       maximumAge: 0,
     })
+  }
 
+  useEffect(() => {
+    startTracking()
     return () => {
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current)
@@ -51,5 +60,8 @@ export default function useGeolocation() {
     }
   }, [])
 
-  return state
+  return {
+    ...state,
+    retry: startTracking
+  }
 }

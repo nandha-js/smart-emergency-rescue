@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import User from '../models/User.js';
+import Alert from '../models/Alert.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,7 +20,7 @@ const demoUsers = [
     allergies: ['Peanuts'],
     conditions: ['Asthma'],
     medications: ['Salbutamol inhaler'],
-    emergencyContact: { name: 'Ravi Sharma', phone: '+91-9876543211', relationship: 'Father' },
+    emergencyContact: { name: 'Ravi ', phone: '+91-9876543211', relationship: 'Father' },
     distressId: 'V-2292',
     location: {
       type: 'Point',
@@ -35,7 +36,7 @@ const demoUsers = [
     allergies: [],
     conditions: ['Diabetes Type 2'],
     medications: ['Metformin 500mg'],
-    emergencyContact: { name: 'Sunita Verma', phone: '+91-9123456790', relationship: 'Wife' },
+    emergencyContact: { name: 'Sunita ', phone: '+91-9123456790', relationship: 'Wife' },
     distressId: 'V-2293',
     location: {
       type: 'Point',
@@ -51,7 +52,7 @@ const demoUsers = [
     allergies: ['Penicillin'],
     conditions: [],
     medications: [],
-    emergencyContact: { name: 'Srinivas Reddy', phone: '+91-9988776656', relationship: 'Father' },
+    emergencyContact: { name: 'Srinivas ', phone: '+91-9988776656', relationship: 'Father' },
     distressId: 'V-2294',
     location: {
       type: 'Point',
@@ -59,15 +60,15 @@ const demoUsers = [
     }
   },
   {
-    name: 'Vikram',
+    name: 'Das-Mini😁',
     phone: '+91-9555444333',
-    email: 'vikram@example.com',
+    email: 'das-mini@example.com',
     age: 58,
     bloodType: 'O Negative', // Fulfill PDF page 11 (O Negative, pre-existing conditions: Type 1 Diabetes, drug allergies: Penicillin, emergency contact: Meera Singh - +91 98xxxxxx21)
     allergies: ['Penicillin'],
     conditions: ['Type 1 Diabetes'],
     medications: ['Insulin Glargine'],
-    emergencyContact: { name: 'Meera Singh', phone: '+91-9555444334', relationship: 'Daughter' },
+    emergencyContact: { name: 'Meera', phone: '+91-9555444334', relationship: 'Daughter' },
     distressId: 'V-2291',
     location: {
       type: 'Point',
@@ -83,7 +84,7 @@ const demoUsers = [
     allergies: ['Shellfish'],
     conditions: ['Epilepsy'],
     medications: ['Levetiracetam 500mg'],
-    emergencyContact: { name: 'Jayesh Patel', phone: '+91-9222111001', relationship: 'Father' },
+    emergencyContact: { name: 'Jayesh ', phone: '+91-9222111001', relationship: 'Father' },
     distressId: 'V-2295',
     location: {
       type: 'Point',
@@ -99,6 +100,9 @@ const seedDB = async () => {
 
     await User.deleteMany({});
     console.log('🗑️  Cleared existing users');
+
+    await Alert.deleteMany({});
+    console.log('🗑️  Cleared existing alerts');
 
     const users = await User.insertMany(demoUsers);
     console.log(`🌱 Seeded ${users.length} demo users:`);

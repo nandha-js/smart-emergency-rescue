@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
 export default function EmergencyMap({ alerts = [], selectedAlert }) {
   const mapContainerRef = useRef(null)
@@ -18,6 +19,11 @@ export default function EmergencyMap({ alerts = [], selectedAlert }) {
       zoomControl: true,
       attributionControl: false,
     }).setView(defaultCenter, defaultZoom)
+
+    // Force Leaflet to recalculate container bounds after rendering
+    setTimeout(() => {
+      map.invalidateSize()
+    }, 250)
 
     // Dark Theme Base Tiles
     L.tileLayer('https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
