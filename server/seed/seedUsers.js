@@ -11,9 +11,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const demoUsers = [
   {
-    name: 'Priya Sharma',
+    name: 'Priya',
     phone: '+91-9876543210',
-    email: 'priya.sharma@example.com',
+    email: 'priya@example.com',
     age: 28,
     bloodType: 'O+',
     allergies: ['Peanuts'],
@@ -27,9 +27,9 @@ const demoUsers = [
     }
   },
   {
-    name: 'Rahul Verma',
+    name: 'Rahul',
     phone: '+91-9123456789',
-    email: 'rahul.verma@example.com',
+    email: 'rahul@example.com',
     age: 45,
     bloodType: 'B+',
     allergies: [],
@@ -43,9 +43,9 @@ const demoUsers = [
     }
   },
   {
-    name: 'Ananya Reddy',
+    name: 'Kumar',
     phone: '+91-9988776655',
-    email: 'ananya.reddy@example.com',
+    email: 'kumar@example.com',
     age: 32,
     bloodType: 'A-',
     allergies: ['Penicillin'],
@@ -59,9 +59,9 @@ const demoUsers = [
     }
   },
   {
-    name: 'Vikram Singh',
+    name: 'Vikram',
     phone: '+91-9555444333',
-    email: 'vikram.singh@example.com',
+    email: 'vikram@example.com',
     age: 58,
     bloodType: 'O Negative', // Fulfill PDF page 11 (O Negative, pre-existing conditions: Type 1 Diabetes, drug allergies: Penicillin, emergency contact: Meera Singh - +91 98xxxxxx21)
     allergies: ['Penicillin'],
@@ -75,9 +75,9 @@ const demoUsers = [
     }
   },
   {
-    name: 'Meera Patel',
+    name: 'Meera',
     phone: '+91-9222111000',
-    email: 'meera.patel@example.com',
+    email: 'meera@example.com',
     age: 24,
     bloodType: 'A+',
     allergies: ['Shellfish'],
