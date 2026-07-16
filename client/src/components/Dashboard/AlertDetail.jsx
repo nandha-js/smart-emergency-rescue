@@ -75,6 +75,49 @@ export default function AlertDetail({ alert, onClose, onRespond, onResolve }) {
           </div>
         )}
 
+        {/* Audio Blackbox Evidence Feed */}
+        {alert.audioClips && alert.audioClips.length > 0 && (
+          <div className="glass-card" style={{ marginTop: '1rem', padding: '1rem' }}>
+            <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>
+              🎙️ Stealth Blackbox Audio Evidence ({alert.audioClips.length})
+            </h4>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                maxHeight: '120px',
+                overflowY: 'auto',
+                paddingRight: '0.5rem'
+              }}
+            >
+              {alert.audioClips.map((clip, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    padding: '0.5rem',
+                    borderRadius: '6px',
+                    border: '1px solid var(--color-border)'
+                  }}
+                >
+                  <span style={{ fontSize: '0.72rem', color: 'var(--color-text-secondary)' }}>
+                    Clip #{idx + 1} - {new Date(clip.createdAt).toLocaleTimeString()}
+                  </span>
+                  <audio
+                    controls
+                    src={`data:audio/webm;base64,${clip.data}`}
+                    style={{ height: '24px', maxWidth: '180px' }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Alert Metadata */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
           <div className="glass-card" style={{ padding: '0.75rem' }}>

@@ -40,7 +40,31 @@ const alertSchema = new mongoose.Schema({
     isDistressed: { type: Boolean, default: true },
     severity: { type: String, default: 'high' },
     summary: { type: String, default: '' },
-  }
+  },
+  responderLocation: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+    },
+    coordinates: {
+      type: [Number],
+      default: [78.9629, 20.5937]
+    },
+  },
+  triageConversation: [
+    {
+      role: { type: String, enum: ['paramedic', 'victim'] },
+      text: { type: String },
+      createdAt: { type: Date, default: Date.now }
+    }
+  ],
+  audioClips: [
+    {
+      data: { type: String },
+      createdAt: { type: Date, default: Date.now }
+    }
+  ]
 }, {
   timestamps: true
 });

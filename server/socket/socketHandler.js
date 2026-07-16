@@ -1,4 +1,5 @@
 import { updateAlertStatus } from '../services/alertService.js';
+import Alert from '../models/Alert.js';
 
 const setupSocket = (io) => {
   io.on('connection', (socket) => {
@@ -19,6 +20,25 @@ const setupSocket = (io) => {
         io.emit('alert-updated', alert);
       } catch (error) {
         console.error('❌ Error resolving alert:', error.message);
+      }
+    });
+
+    socket.on('responder-gps-update', async ({ alertId, latitude, longitude }) => {
+      try {
+        const alert = await Alert.findByIdAndUpdate(
+          alertId,
+          {
+            $set: {
+              'responderLocation.coordinates': [longitude, latitude]
+            }
+          },
+          { new: true }
+        ).populate('victimId');
+
+        io.emit('responder-gps-broadcast', { alertId, latitude, longitude });
+        io.emit('alert-updated', alert);
+      } catch (error) {
+        console.error('❌ Error updating responder location:', error.message);
       }
     });
 

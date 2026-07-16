@@ -12,6 +12,8 @@ import setupSocket from './socket/socketHandler.js';
 import sosRoutes from './routes/sos.js';
 import userRoutes from './routes/users.js';
 import alertRoutes from './routes/alerts.js';
+import triageRoutes from './routes/triage.js';
+import geofenceRoutes from './routes/geofences.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
@@ -36,6 +38,8 @@ app.set('io', io);
 app.use('/api/sos', sosRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/triage', triageRoutes);
+app.use('/api/geofences', geofenceRoutes);
 
 // Error handler
 app.use(errorHandler);

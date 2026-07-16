@@ -59,4 +59,35 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
+// POST /:id/blackbox — Upload base64 audio evidence snippet
+router.post('/:id/blackbox', async (req, res, next) => {
+  try {
+    const { audioChunk } = req.body;
+    if (!audioChunk) {
+      return res.status(400).json({ success: false, message: 'audioChunk is required' });
+    }
+
+    const alert = await Alert.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { audioClips: { data: audioChunk } }
+      },
+      { new: true }
+    ).populate('victimId');
+
+    if (!alert) {
+      return res.status(404).json({ success: false, message: 'Alert not found' });
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('alert-updated', alert);
+    }
+
+    res.json({ success: true, message: 'Blackbox evidence clip archived.' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

@@ -28,44 +28,45 @@ function playNotificationBeep() {
 
 export function SocketProvider({ children }) {
   const [alerts, setAlerts] = useState([])
-  const socketRef = useRef(null)
+  const [socket, setSocket] = useState(null)
 
   useEffect(() => {
     const backendUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin
-    const socket = io(backendUrl, {
+    const socketInstance = io(backendUrl, {
       transports: ['websocket', 'polling'],
     })
-    socketRef.current = socket
+    setSocket(socketInstance)
 
-    socket.on('connect', () => {
-      console.log('[Socket] Connected:', socket.id)
+    socketInstance.on('connect', () => {
+      console.log('[Socket] Connected:', socketInstance.id)
     })
 
-    socket.on('new-emergency', (alert) => {
+    socketInstance.on('new-emergency', (alert) => {
       setAlerts((prev) => [alert, ...prev])
       playNotificationBeep()
     })
 
-    socket.on('alert-updated', (updatedAlert) => {
+    socketInstance.on('alert-updated', (updatedAlert) => {
       setAlerts((prev) =>
         prev.map((a) => (a._id === updatedAlert._id ? updatedAlert : a))
       )
     })
 
-    socket.on('disconnect', () => {
+    socketInstance.on('disconnect', () => {
       console.log('[Socket] Disconnected')
     })
 
     return () => {
-      socket.disconnect()
+      socketInstance.disconnect()
     }
   }, [])
 
   return (
     <SocketContext.Provider
       value={{
-        socket: socketRef.current,
+        socket,
         alerts,
+        setSocket,
         setAlerts,
       }}
     >
